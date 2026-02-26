@@ -1,0 +1,56 @@
+;=================================================================
+; TOP MANIFEST (inspired from ../NanoGraph_Computer):
+;   - paths to the files
+;   - shared memories
+;   - list of processors and their private memories and IOs
+;   - list of the nodes installed in each processor and/or architectures
+;=================================================================
+    4                      six file paths
+
+    0 .                   
+    1 ../io_manifest/ 
+    2 ../../NanoGraph_Store/arm/                  
+    3 ../../NanoGraph_Store/signal-processingFR/  
+
+
+;=================================================================
+    1           number of processors
+    4           number of shared memory 
+
+;   processor and architecture ID are in the range [1..15]
+; 
+;   Access    0 data/prog R/W, 1 data R, 2 R/W, 3 Prog, 4 R/W
+;   Speed     0 slow/best effort, 1 fast/internal, 2 TCM
+;   Type      0 Static, 1 Retention, 2 scratch, 
+;   swap      mem ID to use for the memory swaps (-1 none)
+
+;---MEMID SIZE  A S T SWAP  Comments 
+    0   40000   1 0 1 -1    shared memory
+    1    8000   1 0 0 -1    static external used for swap
+    2    1000   1 0 1 -1    simulates shared retention memory
+   10    4000   1 0 1 -1    shared memory SRAM1
+   
+;=================================================================
+;   Processor #1 - architecture #1 
+;   proc ID, arch ID, main proc, nb mem, service mask, I/O, CacheLine
+    1        1        1          0       15            2    0
+
+;-----IO AFFINITY WITH PROCESSOR 1-------------------------------
+    ;Path      Manifest file     IO_AL_idx INST_IDX   Comments          (frame size in Bytes)  
+    ; inst_idx : instance index allowed to initialize this IO stream
+    ; IO_AL_idx=0 is used for sinking (+rewinding script) without consumer node
+
+    1 io_platform_motion_in_0.txt      3 0  accelero=gyro          
+    1 io_platform_gpio_out_0.txt       7 0  file/GPIO            size_data_out_0 32
+
+
+;======== ALL NODES ==============================================
+; scheduler algorithm :
+;
+;   Path                 Node Manifest                PROC ARCH ID    COMMENTS
+    2       filter/node_manifest_filter.txt             0   1    6    
+    3     detector/node_manifest_detector.txt           0   1   13    
+
+;
+end 
+;=================================================================
